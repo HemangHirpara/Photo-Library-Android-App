@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Photoapp2</string>
+    <string name="title_activity_add_edit_album">add_edit_album</string>
+    <string-array name="albums_array">
+        <item>Stock Album</item>
+    </string-array>
+    <string name="title_activity_add_edit_photos">AddEditPhotos</string>
+    <string name="title_activity_photo_list_view">PhotoListView</string>
+</resources>
