@@ -31,7 +31,7 @@
         </activity>
         <activity
                 android:name=".PhotoView"
-                android:label="List of Albums"
+                android:label="List of Photos"
                 android:parentActivityName=".AlbumView"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
