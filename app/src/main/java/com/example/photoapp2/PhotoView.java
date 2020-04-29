@@ -1,17 +1,12 @@
 package com.example.photoapp2;
 
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.view.*;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -157,7 +152,11 @@ public class PhotoView extends AppCompatActivity {
         if(requestCode == ADD_PHOTO_CODE) {
             selectedImageUri = data.getData();
             Photo p = new Photo(selectedImageUri.toString());
-            p.setCaption(selectedImageUri.getPath());
+            //get file name to display as caption
+            Cursor cursor = getContentResolver().query(selectedImageUri, null, null, null, null);
+            int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            cursor.moveToFirst();
+            p.setCaption(cursor.getString(nameIndex));
             photos.add(p);
             albums.get(albumIndex).addPhoto(p);
             System.out.println("*****PHOTO ADDED*****");
