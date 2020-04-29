@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -99,9 +100,8 @@ public class AddEditAlbum extends AppCompatActivity {
         // gather all data from text fields
         String name = albumName.getText().toString();
 
-        // pop up dialog if errors in input, and return
-        // name and year are mandatory
-        if (name == null || name.length() == 0) {
+        // pop up dialog if errors in input
+        if (name.length() == 0) {
             Bundle bundle = new Bundle();
             bundle.putString(PhotoDialogFragment.MESSAGE_KEY,
                     "Name of Album to Delete Required");
@@ -120,7 +120,7 @@ public class AddEditAlbum extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(3,intent); //resultcode is 3 to identify a delete
-        finish(); // pops activity from the call stack, returns to parent
+        finish(); // pops activity from the call stack, returns to AlbumView onResultActivity
     }
 
     public void open(View view){
@@ -138,13 +138,26 @@ public class AddEditAlbum extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         //do stuff after returning from open album such as deleted photo
+        if(requestCode == OPEN_ALBUM_CODE){
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null) {
+                albumIndex = bundle.getInt(ALBUM_INDEX);
+                openButtonFlag = bundle.getInt(ALBUM_OPEN_FLAG);
+                albumName.setText(bundle.getString(ALBUM_NAME));
+                filePath = bundle.getString(UPDATE_DATA);
+                albums = (ArrayList<Album>) bundle.getSerializable(ALBUM_LIST);
+            }
+            updateData();
+        }
 
     }
 
     /**
-     * Update data into data.dat file for serialization
+     * Update data into album.data file for serialization
      */
     private void updateData() {
+        String pathToFolder = getExternalFilesDir(null).getAbsolutePath();
+        filePath = pathToFolder + File.separator + "album.data";
         try {
             FileOutputStream fos = new FileOutputStream(filePath);
             ObjectOutputStream ous = new ObjectOutputStream(fos);

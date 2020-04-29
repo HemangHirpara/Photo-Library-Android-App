@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.fragment.app.DialogFragment;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class AlbumView extends AppCompatActivity {
     public static final int EDIT_ALBUM_CODE = 1;
     public static final int ADD_ALBUM_CODE = 2;
     private static final int DELETE_ALBUM_CODE = 3;
+
+    private static final int ADD_PHOTO_CODE = 11;
+    private static final int EDIT_PHOTO_CODE = 22;
+    private static final int DELETE_PHOTO_CODE = 33;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +50,14 @@ public class AlbumView extends AppCompatActivity {
         }
         else{
             System.out.println("Found File");
+            //albums = new ArrayList<>();
             try {
                 FileInputStream fis = new FileInputStream(filePath);
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 albums = (ArrayList<Album>) ois.readObject();
                 ois.close();
                 fis.close();
-            } catch (ClassNotFoundException | IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -61,11 +67,13 @@ public class AlbumView extends AppCompatActivity {
 
         // show movie for possible edit when tapped
         listView.setOnItemClickListener((p, V, pos, id) -> showAlbum(pos));
+        System.out.println("ONCREATE EXECUTED");
     }
 
     protected  void onResume() {
         super.onResume();
-        listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        //listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        System.out.println("ONRESUME EXECUTED");
     }
     protected void onStop() {
         super.onStop();
@@ -123,18 +131,37 @@ public class AlbumView extends AppCompatActivity {
             1. change name
             2. add new album
              */
+            //check if name exists in albums
+            for(Album a : albums)
+                if(a.getAlbumName().equals(name)){
+                    Bundle b = new Bundle();
+                    bundle.putString(PhotoDialogFragment.MESSAGE_KEY,
+                            "Name is duplicate");
+                    DialogFragment newFragment = new PhotoDialogFragment();
+                    newFragment.setArguments(bundle);
+                    newFragment.show(getSupportFragmentManager(), "badfields");
+                    return;
+                }
             if (requestCode == EDIT_ALBUM_CODE) {
+                //check if name exists in albums
                 Album album = albums.get(index);
                 album.setAlbumName(name);
             } else {
                 albums.add(new Album(name));
             }
         }
+        else if(resultCode == ADD_PHOTO_CODE) {
+            //return from photoview addphoto
+            //use index to find respective album, and add photo to it
+            Album album = albums.get(index);
+            Photo p = (Photo) bundle.getSerializable("photo");
+            album.addPhoto(p);
+        }
 
         // redo the adapter to reflect change^K
         listView.setAdapter(
                 new ArrayAdapter<Album>(this, R.layout.album, albums));
-
+        updateData();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

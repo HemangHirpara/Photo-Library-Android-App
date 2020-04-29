@@ -12,16 +12,16 @@
             android:layout_height="200dp"
             app:srcCompat="@color/colorAccent"
             android:id="@+id/imageView"
-            android:layout_marginLeft="75dp"/>
+            android:layout_marginStart="75dp" android:contentDescription="@string/imageviewdesc"/>
     <!-- Caption field -->
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="2dp"
-            android:text="Caption"
+            android:text="@string/caption"
     />
     <!-- Caption field -->
-    <EditText
+    <TextView
             android:id="@+id/photo_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:layout_height="36dp"
                 android:layout_marginEnd="15dp"
                 android:onClick="editPhoto"
-                android:text="Edit"
+                android:text="@string/edit"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/photo_save"
@@ -50,7 +50,7 @@
                 android:layout_height="36dp"
                 android:layout_marginEnd="15dp"
                 android:onClick="savePhoto"
-                android:text="Save"
+                android:text="@string/save"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/photo_delete"
@@ -58,15 +58,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:onClick="deletePhoto"
-                android:text="Delete"
+                android:text="@string/delete"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/photo_cancel"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:onClick="cancel"
-                android:text="Return"
+                android:onClick="cancelPhoto"
+                android:text="@string/cancel"
                 android:textSize="16sp"/>
 
     </LinearLayout>

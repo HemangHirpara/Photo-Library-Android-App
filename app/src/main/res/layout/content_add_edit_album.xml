@@ -11,7 +11,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="2dp"
-            android:text="Name of Album"
+            android:text="@string/name_of_album"
     />
     <!-- Name field -->
     <EditText
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:onClick="open"
-                android:text="Open"
+                android:text="@string/open"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/album_save"
@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:onClick="save"
-                android:text="Save"
+                android:text="@string/save"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/album_delete"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:onClick="delete"
-                android:text="Delete"
+                android:text="@string/delete"
                 android:textSize="16sp"/>
         <Button
                 android:id="@+id/album_cancel"
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:onClick="cancel"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textSize="16sp"/>
 
     </LinearLayout>

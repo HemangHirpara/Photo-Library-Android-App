@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">Photoapp2</string>
-    <string name="title_activity_add_edit_album">add_edit_album</string>
-    <string-array name="albums_array">
-        <item>Stock Album</item>
-    </string-array>
+    <string name="title_activity_add_edit_album">AddEditAlbums</string>
     <string name="title_activity_add_edit_photos">AddEditPhotos</string>
     <string name="title_activity_photo_list_view">PhotoListView</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>]
+    <string name="cancel">Cancel</string>
+    <string name="caption">Caption</string>
+    <string name="imageviewdesc">ImageViewDesc</string>
+    <string name="open">Open</string>
+    <string name="name_of_album">Name of Album</string>
 </resources>
