@@ -2,6 +2,7 @@ package com.example.photoapp2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
@@ -9,10 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 public class AddEditAlbum extends AppCompatActivity {
@@ -35,12 +33,20 @@ public class AddEditAlbum extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_edit_album);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // activates the up arrow
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            albums = (ArrayList<Album>) ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         // get the fields
         albumName = findViewById(R.id.album_name);
@@ -50,9 +56,7 @@ public class AddEditAlbum extends AppCompatActivity {
         if (bundle != null) {
             albumIndex = bundle.getInt(ALBUM_INDEX);
             openButtonFlag = bundle.getInt(ALBUM_OPEN_FLAG);
-            albumName.setText(bundle.getString(ALBUM_NAME));
-            filePath = bundle.getString(UPDATE_DATA);
-            albums = (ArrayList<Album>) bundle.getSerializable(ALBUM_LIST);
+            albumName.setText(albums.get(albumIndex).getAlbumName());
         }
         //only show the open button if show/editing an album
         if(openButtonFlag != 9) {
@@ -61,6 +65,7 @@ public class AddEditAlbum extends AppCompatActivity {
             deleteBtn = findViewById(R.id.album_delete);
             deleteBtn.setVisibility(View.GONE);
         }
+        System.out.println("ONCREATE EXECUTED: ADDEDITALBUM");
     }
 
     public void cancel(View view) {
@@ -93,7 +98,7 @@ public class AddEditAlbum extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtras(bundle);
         setResult(RESULT_OK,intent);
-        finish(); // pops activity from the call stack, returns to parent
+        finish(); // pops activity from the call stack, returns to AlbumView
     }
 
     public void delete(View view) {
@@ -114,8 +119,6 @@ public class AddEditAlbum extends AppCompatActivity {
         // make Bundle
         Bundle bundle = new Bundle();
         bundle.putInt(ALBUM_INDEX, albumIndex);
-        bundle.putString(ALBUM_NAME,name);
-
         // send back to caller
         Intent intent = new Intent();
         intent.putExtras(bundle);
@@ -126,13 +129,11 @@ public class AddEditAlbum extends AppCompatActivity {
     public void open(View view){
         Bundle bundle = new Bundle();
         bundle.putInt(AddEditAlbum.ALBUM_INDEX, albumIndex);
-        bundle.putSerializable(AddEditAlbum.ALBUM_LIST, albums);
+        //bundle.putSerializable(AddEditAlbum.ALBUM_LIST, albums);
 
         Intent intent = new Intent(this, PhotoView.class);
         intent.putExtras(bundle);
-        System.out.println("opening album in photoView");
         startActivityForResult(intent, OPEN_ALBUM_CODE);
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -142,14 +143,20 @@ public class AddEditAlbum extends AppCompatActivity {
             Bundle bundle = getIntent().getExtras();
             if (bundle != null) {
                 albumIndex = bundle.getInt(ALBUM_INDEX);
-                openButtonFlag = bundle.getInt(ALBUM_OPEN_FLAG);
-                albumName.setText(bundle.getString(ALBUM_NAME));
-                filePath = bundle.getString(UPDATE_DATA);
-                albums = (ArrayList<Album>) bundle.getSerializable(ALBUM_LIST);
+                albumName.setText(albums.get(albumIndex).getAlbumName());
             }
-            updateData();
         }
+        updateData();
+    }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

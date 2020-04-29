@@ -7,6 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".PhotoView">
 
+    <include layout="@layout/photo_list_view"/>
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -18,7 +19,5 @@
                 android:background="?attr/colorPrimary" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <include layout="@layout/photo_list_view" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

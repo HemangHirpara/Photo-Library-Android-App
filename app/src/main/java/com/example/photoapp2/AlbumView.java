@@ -50,7 +50,6 @@ public class AlbumView extends AppCompatActivity {
         }
         else{
             System.out.println("Found File");
-            //albums = new ArrayList<>();
             try {
                 FileInputStream fis = new FileInputStream(filePath);
                 ObjectInputStream ois = new ObjectInputStream(fis);
@@ -67,14 +66,15 @@ public class AlbumView extends AppCompatActivity {
 
         // show movie for possible edit when tapped
         listView.setOnItemClickListener((p, V, pos, id) -> showAlbum(pos));
-        System.out.println("ONCREATE EXECUTED");
+        System.out.println("ONCREATE EXECUTED: ALBUMVIEW");
     }
 
     protected  void onResume() {
         super.onResume();
-        //listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
-        System.out.println("ONRESUME EXECUTED");
+        listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        System.out.println("ONRESUME EXECUTED: ALBUMVIEW");
     }
+
     protected void onStop() {
         super.onStop();
         updateData();
@@ -84,10 +84,7 @@ public class AlbumView extends AppCompatActivity {
         Bundle bundle = new Bundle();
         Album album = albums.get(pos);
         bundle.putInt(AddEditAlbum.ALBUM_INDEX, pos);
-        bundle.putString(AddEditAlbum.ALBUM_NAME, album.getAlbumName());
         bundle.putInt(AddEditAlbum.ALBUM_OPEN_FLAG, 9);
-        bundle.putString(AddEditAlbum.UPDATE_DATA, filePath);
-        bundle.putSerializable(AddEditAlbum.ALBUM_LIST, albums);
         Intent intent = new Intent(this, AddEditAlbum.class);
         intent.putExtras(bundle);
         startActivityForResult(intent, EDIT_ALBUM_CODE);
@@ -103,35 +100,20 @@ public class AlbumView extends AppCompatActivity {
                                     Intent intent) {
 
         super.onActivityResult(requestCode, resultCode, intent);
-        /*
-        if (resultCode != RESULT_OK) {
-            return;
-        }
-         */
         if(resultCode == RESULT_CANCELED)
             return;
         Bundle bundle = intent.getExtras();
         if (bundle == null) {
             return;
         }
-        // gather all info passed back by launched activity
         String name = bundle.getString(AddEditAlbum.ALBUM_NAME);
         int index = bundle.getInt(AddEditAlbum.ALBUM_INDEX);
 
-        /*
-        If delete button is clicked from add_edit screen
-         */
         if(resultCode == DELETE_ALBUM_CODE){
-            //delete album
             albums.remove(index);
+            System.out.println("*****ALBUM DELETED*****");
         }
         else if(resultCode == RESULT_OK){
-            /*
-            If save button is clicked from add_edit screen, either
-            1. change name
-            2. add new album
-             */
-            //check if name exists in albums
             for(Album a : albums)
                 if(a.getAlbumName().equals(name)){
                     Bundle b = new Bundle();
@@ -143,24 +125,23 @@ public class AlbumView extends AppCompatActivity {
                     return;
                 }
             if (requestCode == EDIT_ALBUM_CODE) {
-                //check if name exists in albums
                 Album album = albums.get(index);
                 album.setAlbumName(name);
+                System.out.println("*****ALBUM EDITED*****");
             } else {
                 albums.add(new Album(name));
+                System.out.println("*****ALBUM ADDED*****");
             }
         }
         else if(resultCode == ADD_PHOTO_CODE) {
-            //return from photoview addphoto
-            //use index to find respective album, and add photo to it
             Album album = albums.get(index);
             Photo p = (Photo) bundle.getSerializable("photo");
             album.addPhoto(p);
         }
 
-        // redo the adapter to reflect change^K
+        // redo the adapter to reflect change
         listView.setAdapter(
-                new ArrayAdapter<Album>(this, R.layout.album, albums));
+                new ArrayAdapter<>(this, R.layout.album, albums));
         updateData();
     }
 

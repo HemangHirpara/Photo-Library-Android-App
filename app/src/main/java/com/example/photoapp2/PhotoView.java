@@ -40,34 +40,23 @@ public class PhotoView extends AppCompatActivity {
     private static final int DELETE_PHOTO_CODE = 33;
     private static final int PHOTO_VIEW_CANCELED = 44;
 
-    private int photoIndex;
+    private int albumIndex;
     private ArrayList<Photo> photos;
     private ArrayList<Album> albums;
     private ListView photoListView;
     private String filePath;
     private CustomListViewAdapter adapter;
     Uri selectedImageUri;
-
+    private TextView photo_view_album_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // activates the up arrow
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(savedInstanceState != null){
-            photoIndex = savedInstanceState.getInt(PHOTO_INDEX);
-            System.out.println("Restoring photoindex");
-        }
-        String pathToFolder = getExternalFilesDir(null).getAbsolutePath();
-        filePath = pathToFolder + File.separator + "album.data";
-        File data = new File(filePath);
-        System.out.println("Found File");
-        //albums = new ArrayList<>();
+        filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
         try {
             FileInputStream fis = new FileInputStream(filePath);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -80,20 +69,28 @@ public class PhotoView extends AppCompatActivity {
         //get data necessary to show album
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            photoIndex = bundle.getInt(ALBUM_INDEX);
-            photos = (ArrayList<Photo>) albums.get(photoIndex).getPhotos();
-            //System.out.println("Photo List Found: " + photos.size());
+            albumIndex = bundle.getInt(ALBUM_INDEX);
+            photos = (ArrayList<Photo>) albums.get(albumIndex).getPhotos();
         }
-
-        //System.out.println("Number of photos in album opened: " + albums.get(photoIndex).getPhotos().size());
+        photo_view_album_name = findViewById(R.id.photo_view_album_name);
+        photo_view_album_name.setText(albums.get(albumIndex).getAlbumName());
+        //System.out.println("AlbumList size: " + albums.size() + "\n" + "PhotoList size: " + photos.size());
         photoListView = findViewById(R.id.photo_list);
         adapter = new CustomListViewAdapter(this,
                 R.layout.photo_lv_item, photos);
         photoListView.setAdapter(adapter);
 
-        // show movie for possible edit when tapped
+        // show photo display for possible edit when tapped
         photoListView.setOnItemClickListener((p, V, pos, id) -> showPhoto(pos));
-        System.out.println("OnCreate Executed in PHOTOVIEW");
+        System.out.println("ONCREATE EXECUTED: PHOTOVIEW\nALBUM SIZE: " + photos.size());
+    }
+
+    protected  void onResume() {
+        super.onResume();
+        adapter = new CustomListViewAdapter(this,
+                R.layout.photo_lv_item, photos);
+        photoListView.setAdapter(adapter);
+        System.out.println("ONRESUME EXECUTED: PHOTOVIEW\nALBUM SIZE: " + photos.size());
     }
 
     private void showPhoto(int pos) {
@@ -140,6 +137,19 @@ public class PhotoView extends AppCompatActivity {
         builder.show();
     }
 
+    public void onBackPressed(){
+        System.out.println("Passing album index back to addeditalbum");
+        // make Bundle
+        Bundle bundle = new Bundle();
+        bundle.putInt(ALBUM_INDEX, albumIndex);
+
+        // send back to caller
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(RESULT_OK,intent);
+        finish(); // pops activity from the call stack, returns to AddEditAlbum
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,11 +159,12 @@ public class PhotoView extends AppCompatActivity {
             Photo p = new Photo(selectedImageUri.toString());
             p.setCaption(selectedImageUri.getPath());
             photos.add(p);
-            albums.get(photoIndex).addPhoto(p);
+            albums.get(albumIndex).addPhoto(p);
+            System.out.println("*****PHOTO ADDED*****");
             updateData();
         }
-        if(requestCode == EDIT_PHOTO_CODE){
-
+        if(resultCode == EDIT_PHOTO_CODE){
+            System.out.println("*****PHOTO EDITED*****");
         }
         if(resultCode == DELETE_PHOTO_CODE){
             //bundle
@@ -163,7 +174,7 @@ public class PhotoView extends AppCompatActivity {
             }
             int index = bundle.getInt(PHOTO_INDEX);
             photos.remove(photos.get(index));
-
+            System.out.println("*****PHOTO DELETED*****");
         }
         if(resultCode == PHOTO_VIEW_CANCELED){
             return;
@@ -171,6 +182,7 @@ public class PhotoView extends AppCompatActivity {
         adapter = new CustomListViewAdapter(this,
                 R.layout.photo_lv_item, photos);
         photoListView.setAdapter(adapter);
+        updateData();
         //finish();
     }
 
@@ -188,6 +200,7 @@ public class PhotoView extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     /**
      * Update data into album.data file for serialization
      */

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".Album">
 
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp" android:id="@+id/photo_view_album_name" android:textSize="30sp"
+            android:text="Placeholder"/>
     <ListView
             android:id="@+id/photo_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:dividerHeight="1px"
-            tools:listitem="@layout/photo_lv_item"/>
+            tools:listitem="@layout/photo_lv_item">
+    </ListView>
 </LinearLayout>
