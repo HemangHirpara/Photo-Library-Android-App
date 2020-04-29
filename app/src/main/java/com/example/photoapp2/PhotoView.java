@@ -158,7 +158,7 @@ public class PhotoView extends AppCompatActivity {
             cursor.moveToFirst();
             p.setCaption(cursor.getString(nameIndex));
             photos.add(p);
-            albums.get(albumIndex).addPhoto(p);
+            //albums.get(albumIndex).addPhoto(p);
             System.out.println("*****PHOTO ADDED*****");
             updateData();
         }

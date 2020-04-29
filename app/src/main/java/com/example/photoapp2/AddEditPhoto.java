@@ -77,8 +77,6 @@ public class AddEditPhoto extends AppCompatActivity {
         }
         //if you are visiting addedit photo page via add button dont show edit/delete button
         if(open_flag != 8){
-            editBtn = findViewById(R.id.photo_edit);
-            editBtn.setVisibility(View.GONE);
             deleteBtn = findViewById(R.id.photo_delete);
             deleteBtn.setVisibility(View.GONE);
         }

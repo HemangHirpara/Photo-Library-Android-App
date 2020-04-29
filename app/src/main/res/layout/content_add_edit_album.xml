@@ -19,11 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"
+            android:inputType="text"
+            android:maxLines="1"
     />
     <!--  Buttons for save and cancel -->
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="88dp"
+            android:layout_height="100dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="20dp">
@@ -32,7 +34,7 @@
                 android:id="@+id/album_open"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:onClick="open"
                 android:text="@string/open"
                 android:textSize="16sp"/>
@@ -40,7 +42,7 @@
                 android:id="@+id/album_save"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:onClick="save"
                 android:text="@string/save"
                 android:textSize="16sp"/>
@@ -48,7 +50,7 @@
                 android:id="@+id/album_delete"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:onClick="delete"
                 android:text="@string/delete"
                 android:textSize="16sp"/>
@@ -56,7 +58,7 @@
                 android:id="@+id/album_cancel"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="40dp"
                 android:onClick="cancel"
                 android:text="@string/cancel"
                 android:textSize="16sp"/>

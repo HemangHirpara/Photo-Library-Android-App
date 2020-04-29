@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Photoapp2</string>
+    <string name="app_name">Photo Library: Albums</string>
     <string name="title_activity_add_edit_album">AddEditAlbums</string>
     <string name="title_activity_add_edit_photos">AddEditPhotos</string>
     <string name="title_activity_photo_list_view">PhotoListView</string>
@@ -11,4 +11,6 @@
     <string name="imageviewdesc">ImageViewDesc</string>
     <string name="open">Open</string>
     <string name="name_of_album">Name of Album</string>
+    <string name="location_tag">Location Tag</string>
+    <string name="person_tag">Person Tag</string>
 </resources>
