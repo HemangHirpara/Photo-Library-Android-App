@@ -1,10 +1,14 @@
 package com.example.photoapp2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,13 +25,8 @@ public class AddEditPhoto extends AppCompatActivity {
 
     public static final String PHOTO_INDEX = "photo_pos";
     public static final String ALBUM_INDEX = "album_pos";
-    public static final String PHOTO_NAME = "photo_name";
-    public static final String PHOTO_OPEN_FLAG = "open_photo_flag";
-    public static final String PHOTO_LIST = "photo_list";
-    public static final String PHOTO_URI = "photo_uri";
-    private static final int ADD_PHOTO_CODE = 11;
-    private static final int EDIT_PHOTO_CODE = 22;
-    private static final int DELETE_PHOTO_CODE = 33;
+    private static final String PERSON_TAG = "person_tag";
+    private static final String LOCATION_TAG = "location_tag";
     private static final int PHOTO_VIEW_CANCELED = 44;
 
     private int photoIndex, albumIndex;
@@ -40,9 +39,9 @@ public class AddEditPhoto extends AppCompatActivity {
     private Uri photoUri;
     private ImageView imageView;
     private TextView captionView;
-
-    private Button deleteBtn, editBtn;
-
+    private EditText personField;
+    private EditText locationField;
+    private Button deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,29 +67,26 @@ public class AddEditPhoto extends AppCompatActivity {
         if (bundle != null) {
             photoIndex = bundle.getInt(PHOTO_INDEX);
             albumIndex = bundle.getInt(ALBUM_INDEX);
-            open_flag = bundle.getInt(PHOTO_OPEN_FLAG);
             photoList = (ArrayList<Photo>) albums.get(albumIndex).getPhotos();
-            System.out.println("GETTING PHOTO INFO TO DISPLAY listsize: " + photoList.size());
             photo = photoList.get(photoIndex);
             photoName = photo.getCaption();
             photoUri = Uri.parse(photo.getPhotoFile());
         }
-        //if you are visiting addedit photo page via add button dont show edit/delete button
-        if(open_flag != 8){
-            deleteBtn = findViewById(R.id.photo_delete);
-            deleteBtn.setVisibility(View.GONE);
-        }
-        imageView = findViewById(R.id.imageView);
+        setTitle("Photo Display");
+        imageView = findViewById(R.id.ssImageView);
         imageView.setImageURI(photoUri);
         captionView = findViewById(R.id.photo_caption);
         captionView.setText(photoName);
-        System.out.println("ONCREATE EXECUTED: ADDEDITPHOTO");
+        personField = findViewById(R.id.person_tag_field);
+        personField.setText(photo.getPersonTag());
+        locationField = findViewById(R.id.location_tag_field);
+        locationField.setText(photo.getLocationTag());
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        System.out.println("RESUMING LIST of PHOTOS, bypass oncreating?");
+        finish();
     }
 
     public void cancelPhoto(View view){
@@ -98,11 +94,23 @@ public class AddEditPhoto extends AppCompatActivity {
         finish();
     }
     public void savePhoto(View view){
+        // gather all data from text fields
+        String personValue = personField.getText().toString();
+        String locationValue = locationField.getText().toString();
 
+        // make Bundle
+        Bundle bundle = new Bundle();
+        bundle.putInt(PHOTO_INDEX, photoIndex);
+        bundle.putString(PERSON_TAG, personValue);
+        bundle.putString(LOCATION_TAG, locationValue);
+
+        // send back to caller
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(22,intent);
+        finish(); // pops activity from the call stack, returns to PhotoView
     }
-    public void editPhoto(View view){
-        //setResult(22, intent); //resultCode is 22 to identify editphoto
-    }
+
     public void deletePhoto(View view) {
         // make Bundle
         Bundle bundle = new Bundle();
@@ -113,6 +121,15 @@ public class AddEditPhoto extends AppCompatActivity {
         intent.putExtras(bundle);
         setResult(33,intent); //resultcode is 33 to identify a deletephoto
         finish(); // pops activity from the call stack, returns to AlbumView onResultActivity
+    }
+
+    public void slideshowBtn(View view){
+        Bundle bundle = new Bundle();
+        bundle.getInt(PHOTO_INDEX, photoIndex);
+        bundle.putInt(ALBUM_INDEX, albumIndex);
+        Intent intent = new Intent(this, Slideshow.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     /**
@@ -140,6 +157,28 @@ public class AddEditPhoto extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Hide soft keyboard by clicking on window
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
     }
 }
 

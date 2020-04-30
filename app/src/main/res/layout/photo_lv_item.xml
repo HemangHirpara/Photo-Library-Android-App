@@ -3,12 +3,13 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="horizontal"
               android:padding="8dp"
+              android:background="@color/listBg"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
     <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="75dp"
-            android:layout_height="89dp"
+            android:layout_width="91dp"
+            android:layout_height="101dp"
             tools:src="@tools:sample/avatars"/>
     <TextView
             android:id="@+id/caption"
@@ -16,5 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="5dp"
-            tools:text="@tools:sample/lorem"/>
+            android:textColor="@color/colorBtnText"
+            tools:text="@tools:sample/lorem" android:layout_marginLeft="10dp" android:textSize="20sp"/>
 </LinearLayout>

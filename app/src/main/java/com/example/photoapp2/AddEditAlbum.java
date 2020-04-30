@@ -18,8 +18,6 @@ public class AddEditAlbum extends AppCompatActivity {
     public static final String ALBUM_INDEX = "album_pos";
     public static final String ALBUM_NAME = "album_name";
     public static final String ALBUM_OPEN_FLAG = "album_open";
-    public static final String ALBUM_LIST = "album_list";
-    public static final String UPDATE_DATA = "update_data";
 
     private static final int OPEN_ALBUM_CODE = 123;
 

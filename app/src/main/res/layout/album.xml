@@ -2,8 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:background="#ffe066"
-          android:textSize="14sp"
+          android:background="@color/listBg"
+          android:textColor="@color/colorBtnText"
+          android:textSize="20sp"
           android:paddingLeft="10dp"
           android:paddingTop="4dp"
           android:paddingBottom="4dp">

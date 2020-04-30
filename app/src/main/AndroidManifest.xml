@@ -12,6 +12,15 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
+                android:name=".Slideshow"
+                android:label="@string/title_activity_slideshow"
+                android:parentActivityName=".PhotoView"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.photoapp2.PhotoView"/>
+        </activity>
+        <activity
                 android:name=".AddEditAlbum"
                 android:label="Add/Edit Album"
                 android:parentActivityName=".AlbumView"

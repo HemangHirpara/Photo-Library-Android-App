@@ -14,17 +14,13 @@ import java.util.ArrayList;
 
 public class AlbumView extends AppCompatActivity {
 
-    private ListView listView;
-    private ArrayList<Album> albums;
-    private String filePath;
     public static final int EDIT_ALBUM_CODE = 1;
     public static final int ADD_ALBUM_CODE = 2;
     private static final int DELETE_ALBUM_CODE = 3;
 
-    private static final int ADD_PHOTO_CODE = 11;
-    private static final int EDIT_PHOTO_CODE = 22;
-    private static final int DELETE_PHOTO_CODE = 33;
-
+    private ListView listView;
+    private ArrayList<Album> albums;
+    private String filePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +31,6 @@ public class AlbumView extends AppCompatActivity {
         File data = new File(filePath);
         if(!(data.exists() || data.isFile())){
             // serialize the data
-            System.out.println("Created File");
             albums = new ArrayList<>();
             try {
                 data.createNewFile();
@@ -49,7 +44,6 @@ public class AlbumView extends AppCompatActivity {
             }
         }
         else{
-            System.out.println("Found File");
             try {
                 FileInputStream fis = new FileInputStream(filePath);
                 ObjectInputStream ois = new ObjectInputStream(fis);
@@ -66,13 +60,11 @@ public class AlbumView extends AppCompatActivity {
 
         // show movie for possible edit when tapped
         listView.setOnItemClickListener((p, V, pos, id) -> showAlbum(pos));
-        System.out.println("ONCREATE EXECUTED: ALBUMVIEW");
     }
 
     protected  void onResume() {
         super.onResume();
         listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
-        System.out.println("ONRESUME EXECUTED: ALBUMVIEW");
     }
 
     protected void onStop() {
@@ -111,7 +103,6 @@ public class AlbumView extends AppCompatActivity {
 
         if(resultCode == DELETE_ALBUM_CODE){
             albums.remove(index);
-            System.out.println("*****ALBUM DELETED*****");
         }
         else if(resultCode == RESULT_OK){
             for(Album a : albums)
@@ -127,16 +118,9 @@ public class AlbumView extends AppCompatActivity {
             if (requestCode == EDIT_ALBUM_CODE) {
                 Album album = albums.get(index);
                 album.setAlbumName(name);
-                System.out.println("*****ALBUM EDITED*****");
             } else {
                 albums.add(new Album(name));
-                System.out.println("*****ALBUM ADDED*****");
             }
-        }
-        else if(resultCode == ADD_PHOTO_CODE) {
-            Album album = albums.get(index);
-            Photo p = (Photo) bundle.getSerializable("photo");
-            album.addPhoto(p);
         }
 
         // redo the adapter to reflect change

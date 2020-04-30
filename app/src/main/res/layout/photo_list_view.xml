@@ -9,13 +9,8 @@
 
     <TextView
             android:layout_width="match_parent"
-            android:layout_height="53dp" android:id="@+id/placeholder" android:textSize="18sp"
+            android:layout_height="58dp" android:id="@+id/placeholder" android:textSize="18sp"
     />
-    <TextView
-            android:text="placeholder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:id="@+id/photo_view_album_name" android:paddingLeft="10dp"
-            android:textSize="24sp"/>
     <ListView
             android:id="@+id/photo_list"
             android:layout_width="match_parent"

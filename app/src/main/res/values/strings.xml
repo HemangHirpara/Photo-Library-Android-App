@@ -13,4 +13,9 @@
     <string name="name_of_album">Name of Album</string>
     <string name="location_tag">Location Tag</string>
     <string name="person_tag">Person Tag</string>
+    <string name="title_activity_slideshow">Slideshow</string>
+    <string name="next">Next</string>
+    <string name="placeholder">placeholder</string>
+    <string name="previous">Previous</string>
+    <string name="exit">Exit</string>
 </resources>
