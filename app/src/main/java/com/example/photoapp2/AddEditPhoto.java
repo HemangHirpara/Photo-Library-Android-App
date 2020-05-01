@@ -28,6 +28,7 @@ public class AddEditPhoto extends AppCompatActivity {
     private static final String PERSON_TAG = "person_tag";
     private static final String LOCATION_TAG = "location_tag";
     private static final int PHOTO_VIEW_CANCELED = 44;
+    private static final int MOVE_PHOTO_CODE = 55;
 
     private int photoIndex, albumIndex;
     private Photo photo;
@@ -89,10 +90,20 @@ public class AddEditPhoto extends AppCompatActivity {
         finish();
     }
 
+    public void movePhoto(View view){
+        Bundle bundle = new Bundle();
+        bundle.putInt(AddEditPhoto.ALBUM_INDEX, albumIndex);
+        bundle.putInt(AddEditPhoto.PHOTO_INDEX, photoIndex);
+        Intent intent = new Intent(this, MovePhoto.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, MOVE_PHOTO_CODE);
+    }
+
     public void cancelPhoto(View view){
         setResult(PHOTO_VIEW_CANCELED);
         finish();
     }
+
     public void savePhoto(View view){
         // gather all data from text fields
         String personValue = personField.getText().toString();
@@ -132,6 +143,29 @@ public class AddEditPhoto extends AppCompatActivity {
         startActivity(intent);
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(intent == null) return;
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            return;
+        }
+        if(requestCode == MOVE_PHOTO_CODE){
+            //Move photo from srcAlbum to desAlbum, removing it from srcAlbum
+            Album desAlbum = albums.get(bundle.getInt(ALBUM_INDEX));
+            Album srcAlbum = albums.get(bundle.getInt("currAlbum"));
+            int photoToMoveIndex = bundle.getInt(PHOTO_INDEX);
+            Photo p = srcAlbum.getPhotos().get(photoToMoveIndex);
+            srcAlbum.removePhoto(p);
+            desAlbum.addPhoto(p);
+            updateData();
+            //after moving photo, return to AlbumView to show reflected changes
+            Intent i = new Intent(AddEditPhoto.this, AlbumView.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
+    }
+
     /**
      * Update data into album.data file for serialization
      */
@@ -151,12 +185,13 @@ public class AddEditPhoto extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**

@@ -12,6 +12,24 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
+                android:name=".MovePhoto"
+                android:label="Move Photo To Another Album"
+                android:parentActivityName=".AddEditPhoto"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.photoapp2.AddEditPhoto"/>
+        </activity>
+        <activity
+                android:name=".Search"
+                android:label="@string/title_activity_search"
+                android:parentActivityName=".AlbumView"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.photoapp2.AlbumView"/>
+        </activity>
+        <activity
                 android:name=".Slideshow"
                 android:label="@string/title_activity_slideshow"
                 android:parentActivityName=".PhotoView"

@@ -63,7 +63,6 @@ public class AddEditAlbum extends AppCompatActivity {
             deleteBtn = findViewById(R.id.album_delete);
             deleteBtn.setVisibility(View.GONE);
         }
-        System.out.println("ONCREATE EXECUTED: ADDEDITALBUM");
     }
 
     public void cancel(View view) {
@@ -142,6 +141,7 @@ public class AddEditAlbum extends AppCompatActivity {
             if (bundle != null) {
                 albumIndex = bundle.getInt(ALBUM_INDEX);
                 albumName.setText(albums.get(albumIndex).getAlbumName());
+                System.out.println("IN ACTIVITY RESULT");
             }
         }
         updateData();

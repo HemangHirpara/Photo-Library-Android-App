@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+tools:showIn="@layout/search"
+tools:context=".Search">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="58dp" android:id="@+id/placeholder" android:textSize="18sp"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/person_tag"
+    />
+    <EditText
+            android:id="@+id/searchPerson"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:drawable/editbox_background"
+            android:inputType="text"
+            android:maxLines="1"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="2dp"
+            android:text="@string/location_tag"
+    />
+    <EditText
+            android:id="@+id/searchLocation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:drawable/editbox_background"
+            android:inputType="text"
+            android:maxLines="1"
+    />
+    <ListView
+            android:id="@+id/search_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="1px"
+            tools:listitem="@layout/photo_lv_item">
+    </ListView>
+</LinearLayout>

@@ -87,6 +87,13 @@ public class AlbumView extends AppCompatActivity {
         startActivityForResult(intent, ADD_ALBUM_CODE);
     }
 
+
+    private void search() {
+        //change class to search class OR alert dialog box to navigate to either search by person or location
+        Intent intent = new Intent(this, Search.class);
+        startActivityForResult(intent, 4);
+    }
+
     protected void onActivityResult(int requestCode,
                                     int resultCode,
                                     Intent intent) {
@@ -131,6 +138,7 @@ public class AlbumView extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_album_menu,menu);
+        getMenuInflater().inflate(R.menu.search_album_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -138,6 +146,9 @@ public class AlbumView extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_add:
                 addAlbum();
+                return true;
+            case R.id.action_search:
+                search();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

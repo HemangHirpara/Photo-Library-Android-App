@@ -1,12 +1,10 @@
 package com.example.photoapp2;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,23 +17,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class Slideshow extends AppCompatActivity {
-
-    public static final String ALBUM_INDEX = "album_pos";
+public class MovePhoto extends AppCompatActivity {
     public static final String PHOTO_INDEX = "photo_pos";
-    public int photoIndex, albumIndex;
-    private ArrayList<Photo> photoList;
+    public static final String ALBUM_INDEX = "album_pos";
+
+    private ListView albumList;
     private ArrayList<Album> albums;
     private String filePath;
-    private ImageView ssImageView;
-    private TextView ssCaption;
+    private int photoIndex, albumIndex;
+    private Photo photoToMove;
+    private Album currAlbum;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.slideshow);
+        setContentView(R.layout.move_photo);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
         try {
             FileInputStream fis = new FileInputStream(filePath);
@@ -50,32 +49,34 @@ public class Slideshow extends AppCompatActivity {
         //get data necessary to show album
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            albumIndex = bundle.getInt(ALBUM_INDEX);
-            photoList = (ArrayList<Photo>) albums.get(albumIndex).getPhotos();
             photoIndex = bundle.getInt(PHOTO_INDEX);
+            albumIndex = bundle.getInt(ALBUM_INDEX);
+            currAlbum = albums.get(albumIndex);
+            photoToMove = currAlbum.getPhotos().get(photoIndex);
         }
-        setTitle("Slideshow: " + albums.get(bundle.getInt(ALBUM_INDEX)).getAlbumName());
-        ssImageView = findViewById(R.id.ssImageView);
-        ssImageView.setImageURI(Uri.parse(photoList.get(photoIndex).getPhotoFile()));
-        ssCaption = findViewById(R.id.ssCaption);
-        ssCaption.setText(photoList.get(photoIndex).getCaption());
+
+        albumList = findViewById(R.id.album_list_move);
+        albumList.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+
+        // show movie for possible edit when tapped
+        albumList.setOnItemClickListener((p, V, pos, id) -> move(pos));
     }
 
-    public void nextBtnAction(View view){
-        if(photoIndex+1<photoList.size()){
-            photoIndex++;
-            ssImageView.setImageURI(Uri.parse(photoList.get(photoIndex).getPhotoFile()));
-            ssCaption.setText(photoList.get(photoIndex).getCaption());
-        }
-    }
-    public void prevBtnAction(View view){
-        if(photoIndex-1>=0){
-            photoIndex--;
-            ssImageView.setImageURI(Uri.parse(photoList.get(photoIndex).getPhotoFile()));
-            ssCaption.setText(photoList.get(photoIndex).getCaption());
-        }
+    private void move(int pos) {
+        // make Bundle
+        Bundle bundle = new Bundle();
+        bundle.putInt(PHOTO_INDEX, photoIndex); //photo to move index
+        bundle.putInt(ALBUM_INDEX, pos); //photo move destination album index
+        bundle.putInt("currAlbum", albumIndex); //photo source album index
+
+        // send back to caller
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        setResult(RESULT_OK,intent);
+        finish(); // pops activity from the call stack, returns to AlbumView
     }
 
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:

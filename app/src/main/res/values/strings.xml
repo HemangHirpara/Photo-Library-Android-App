@@ -18,4 +18,7 @@
     <string name="placeholder">placeholder</string>
     <string name="previous">Previous</string>
     <string name="exit">Exit</string>
+    <string name="title_activity_search">Search</string>
+    <string name="move">Move</string>
+    <string name="title_activity_move_photo">MovePhoto</string>
 </resources>

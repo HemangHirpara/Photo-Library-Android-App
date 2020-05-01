@@ -47,8 +47,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$PROJECT_DIR$/../Downloads/slideshow-white-18dp/1x/baseline_slideshow_white_18dp.png" />
-                                      <entry key="outputName" value="ic_slideshow" />
+                                      <entry key="imageAsset" value="$PROJECT_DIR$/../Downloads/search-white-18dp/1x/baseline_search_white_18dp.png" />
+                                      <entry key="outputName" value="ic_search" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>

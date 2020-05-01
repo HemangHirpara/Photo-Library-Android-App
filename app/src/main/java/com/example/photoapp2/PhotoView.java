@@ -124,19 +124,6 @@ public class PhotoView extends AppCompatActivity {
         builder.show();
     }
 
-    public void onBackPressed(){
-        //if device back button is pressed go to addeditalbum view
-        // make Bundle
-        Bundle bundle = new Bundle();
-        bundle.putInt(ALBUM_INDEX, albumIndex);
-
-        // send back to caller
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        setResult(RESULT_OK,intent);
-        finish(); // pops activity from the call stack, returns to AddEditAlbum
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -212,43 +199,6 @@ public class PhotoView extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-}
-
-class CustomListViewAdapter extends ArrayAdapter<Photo> {
-
-    Context context;
-
-    public CustomListViewAdapter(Context context, int resourceId, List<Photo> items) {
-        super(context, resourceId, items);
-        this.context = context;
-    }
-
-    /*private view holder class*/
-    private class ViewHolder {
-        ImageView imageView;
-        TextView txtTitle;
-    }
-
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-        Photo p = getItem(position);
-
-        LayoutInflater mInflater = (LayoutInflater) context
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.photo_lv_item, null);
-            holder = new ViewHolder();
-            holder.txtTitle = (TextView) convertView.findViewById(R.id.caption);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.thumbnail);
-            convertView.setTag(holder);
-        } else
-            holder = (ViewHolder) convertView.getTag();
-
-        holder.txtTitle.setText(p.getCaption());
-        holder.imageView.setImageURI(Uri.parse(p.getPhotoFile()));
-
-        return convertView;
     }
 }
 

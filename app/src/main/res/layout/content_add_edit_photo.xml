@@ -67,6 +67,17 @@
             android:orientation="horizontal"
             android:paddingTop="20dp">
         <Button
+                android:id="@+id/photo_move"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/colorAccent"
+                android:textColor="@color/colorBtnText"
+                android:onClick="movePhoto"
+                android:text="@string/move"
+                android:textSize="16sp"/>
+        <Button
                 android:id="@+id/photo_save"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
