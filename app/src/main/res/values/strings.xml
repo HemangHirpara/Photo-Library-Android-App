@@ -21,4 +21,6 @@
     <string name="title_activity_search">Search</string>
     <string name="move">Move</string>
     <string name="title_activity_move_photo">MovePhoto</string>
+    <string name="advanced_search">Advanced Search</string>
+    <string name="title_activity_advance_search">AdvanceSearch</string>
 </resources>

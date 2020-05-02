@@ -1,12 +1,8 @@
 package com.example.photoapp2;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
@@ -23,19 +19,23 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class Search extends AppCompatActivity {
+public class AdvanceSearch extends AppCompatActivity {
 
     private ArrayList<Photo> allPhotoList;
+    private ArrayList<Photo> resultList;
     private ArrayList<Album> albums;
     private String filePath;
-    private EditText searchPerson;
-    private EditText searchLocation;
+    private EditText advSearchPerson;
+    private EditText advSearchLocation;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
     private ListView searchList;
     private SearchAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search);
+        setContentView(R.layout.advance_search);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,45 +55,48 @@ public class Search extends AppCompatActivity {
                 allPhotoList.add(p);
             }
         }
+
         //get data necessary to show album
-        setTitle("Searching Albums");
-        searchPerson = findViewById(R.id.searchPerson);
-        searchLocation = findViewById(R.id.searchLocation);
-        searchList=findViewById(R.id.search_list);
+        setTitle("Advance Search Albums");
+        resultList = new ArrayList<>();
+        advSearchPerson = findViewById(R.id.advSearchPerson);
+        advSearchLocation = findViewById(R.id.advSearchLocation);
+        radioGroup = findViewById(R.id.RGroup);
+        searchList=findViewById(R.id.advSearch_list);
         searchList.setTextFilterEnabled(true);
-        adapter = new SearchAdapter(this, allPhotoList);
+        adapter = new SearchAdapter(this, resultList);
         searchList.setAdapter(adapter);
-
-        ArrayList<EditText> editTexts = new ArrayList<>();
-        editTexts.add(searchPerson);
-        editTexts.add(searchLocation);
-        for(EditText et : editTexts){
-            et.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if(et == searchPerson)
-                        adapter.getFilter().filter("PERSON" + s);
-                    else if(et == searchLocation)
-                        adapter.getFilter().filter("LOCATION" + s);
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-        }
     }
 
-    public void advSearch(View view) {
-        //if advSearch is clicked go to new activity with two textfields and two radio buttons and/or
-        Intent intent = new Intent(this, AdvanceSearch.class);
-        startActivity(intent);
+    public void search(View view) {
+        resultList = new ArrayList<>();
+        adapter = new SearchAdapter(this, resultList);
+        searchList.setAdapter(adapter);
+        //if et1.getText == null || et1.gettext < 1 dispaly error
+        String personVal = advSearchPerson.getText().toString();
+        String locationVal = advSearchLocation.getText().toString();
+        if(personVal == null || personVal.length() < 1 || locationVal == null || locationVal.length() < 1 ) return;
+        int selectedRadio = radioGroup.getCheckedRadioButtonId();
+        radioButton = findViewById(selectedRadio);
+        //AND
+        if(radioButton.getText().equals("AND")) {
+            for (Photo p : allPhotoList) {
+                if (p.getPersonTag().toLowerCase().startsWith(personVal) &&
+                        p.getLocationTag().toLowerCase().startsWith(locationVal)) {
+                    resultList.add(p);
+                }
+            }
+        }
+        else {
+            for (Photo p : allPhotoList) {
+                if (p.getPersonTag().toLowerCase().startsWith(personVal) ||
+                        p.getLocationTag().toLowerCase().startsWith(locationVal)) {
+                    resultList.add(p);
+                }
+            }
+        }
+        adapter = new SearchAdapter(this, resultList);
+        searchList.setAdapter(adapter);
     }
 
     @Override
@@ -127,5 +130,4 @@ public class Search extends AppCompatActivity {
         }
         return super.dispatchTouchEvent( event );
     }
-
 }
