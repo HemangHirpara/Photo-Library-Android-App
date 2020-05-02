@@ -40,7 +40,7 @@ public class PhotoView extends AppCompatActivity {
     private ArrayList<Album> albums;
     private ListView photoListView;
     private String filePath;
-    private CustomListViewAdapter adapter;
+    private SearchAdapter adapter;
     Uri selectedImageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +68,7 @@ public class PhotoView extends AppCompatActivity {
         }
         setTitle(albums.get(albumIndex).getAlbumName() + ": Photo List");
         photoListView = findViewById(R.id.photo_list);
-        adapter = new CustomListViewAdapter(this,
-                R.layout.photo_lv_item, photos);
+        adapter = new SearchAdapter(this, photos);
         photoListView.setAdapter(adapter);
 
         // show photo display for possible edit when tapped
@@ -78,8 +77,7 @@ public class PhotoView extends AppCompatActivity {
 
     protected  void onResume() {
         super.onResume();
-        adapter = new CustomListViewAdapter(this,
-                R.layout.photo_lv_item, photos);
+        adapter = new SearchAdapter(this, photos);
         photoListView.setAdapter(adapter);
     }
 
@@ -163,8 +161,7 @@ public class PhotoView extends AppCompatActivity {
         if(resultCode == PHOTO_VIEW_CANCELED){
             return;
         }
-        adapter = new CustomListViewAdapter(this,
-                R.layout.photo_lv_item, photos);
+        adapter = new SearchAdapter(this, photos);
         photoListView.setAdapter(adapter);
         updateData();
     }

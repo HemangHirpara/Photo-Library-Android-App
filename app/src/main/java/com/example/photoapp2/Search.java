@@ -1,11 +1,15 @@
 package com.example.photoapp2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,9 +30,10 @@ public class Search extends AppCompatActivity {
     private ImageView ssImageView;
     private TextView ssCaption;
     private String filePath;
-    private EditText searchPerson, searchLocation;
+    private EditText searchPerson;
+    private EditText searchLocation;
     private ListView searchList;
-    private CustomListViewAdapter adapter1;
+    private SearchAdapter adapter2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,32 +63,33 @@ public class Search extends AppCompatActivity {
         searchLocation = findViewById(R.id.searchLocation);
         searchList=findViewById(R.id.search_list);
         searchList.setTextFilterEnabled(true);
+        adapter2 = new SearchAdapter(this, allPhotoList);
+        searchList.setAdapter(adapter2);
 
-        adapter1 = new CustomListViewAdapter(this,
-                R.layout.photo_lv_item, allPhotoList);
-        searchList.setAdapter(adapter1);
+        ArrayList<EditText> editTexts = new ArrayList<>();
+        editTexts.add(searchPerson);
+        editTexts.add(searchLocation);
+        for(EditText et : editTexts){
+            et.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        searchPerson.addTextChangedListener(new TextWatcher() {
+                }
 
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                // TODO Auto-generated method stub
-                Search.this.adapter1.getFilter().filter(arg0);
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(et == searchPerson)
+                        adapter2.getFilter().filter("PERSON" + s);
+                    else if(et == searchLocation)
+                        adapter2.getFilter().filter("LOCATION" + s);
+                }
 
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                                          int arg3) {
-                // TODO Auto-generated method stub
+                @Override
+                public void afterTextChanged(Editable s) {
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
@@ -94,6 +100,28 @@ public class Search extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Hide soft keyboard by clicking on window
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
     }
 
 }
