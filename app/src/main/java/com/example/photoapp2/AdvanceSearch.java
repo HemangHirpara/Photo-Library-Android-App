@@ -69,7 +69,10 @@ public class AdvanceSearch extends AppCompatActivity {
         //if et1.getText == null || et1.gettext < 1 dispaly error
         String personVal = advSearchPerson.getText().toString();
         String locationVal = advSearchLocation.getText().toString();
-        if(personVal == null || personVal.length() < 1 || locationVal == null || locationVal.length() < 1 ) return;
+        if(personVal == null || personVal.length() < 1 || locationVal == null || locationVal.length() < 1 ) {
+            Toast.makeText(this, "No Results for Query", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int selectedRadio = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(selectedRadio);
         //AND
@@ -91,6 +94,8 @@ public class AdvanceSearch extends AppCompatActivity {
         }
         if(resultList.size() == 0)
             Toast.makeText(this, "No Results for Query", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, resultList.size()+" Results for Query", Toast.LENGTH_SHORT).show();
         adapter = new SearchAdapter(this, resultList);
         searchList.setAdapter(adapter);
     }

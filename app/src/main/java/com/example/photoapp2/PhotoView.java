@@ -1,6 +1,5 @@
 package com.example.photoapp2;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 //list all photos in album opened
 public class PhotoView extends AppCompatActivity {
@@ -71,7 +69,11 @@ public class PhotoView extends AppCompatActivity {
         // show photo display for possible edit when tapped
         photoListView.setOnItemClickListener((p, V, pos, id) -> showPhoto(pos));
     }
-
+    public void onBackPressed(){
+        Intent i = new Intent(PhotoView.this, AlbumView.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
     protected  void onResume() {
         super.onResume();
         adapter = new SearchAdapter(this, photos);
@@ -89,8 +91,6 @@ public class PhotoView extends AppCompatActivity {
     }
 
     private void addPhoto(){
-        //open image gallery, and add selected image to photos
-        //implement select image inside onResultActivity method
         selectImage(this);
         updateData();
     }
@@ -139,6 +139,7 @@ public class PhotoView extends AppCompatActivity {
             photos.add(p);
             updateData();
             Toast.makeText(this, "Photo Added", Toast.LENGTH_SHORT).show();
+            cursor.close();
         }
         if(resultCode == EDIT_PHOTO_CODE){
             Bundle bundle = data.getExtras();
@@ -179,6 +180,10 @@ public class PhotoView extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_photo) {
             addPhoto();
+            return true;
+        }
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

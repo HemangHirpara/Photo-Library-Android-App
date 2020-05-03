@@ -12,14 +12,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.io.*;
 import java.util.ArrayList;
 
-//display tags similar to addEditAlbum
-//resultCode 3 for delete
 public class AddEditPhoto extends AppCompatActivity {
 
     public static final String PHOTO_INDEX = "photo_pos";
@@ -150,13 +149,22 @@ public class AddEditPhoto extends AppCompatActivity {
             Album srcAlbum = albums.get(bundle.getInt("currAlbum"));
             int photoToMoveIndex = bundle.getInt(PHOTO_INDEX);
             Photo p = srcAlbum.getPhotos().get(photoToMoveIndex);
-            srcAlbum.removePhoto(p);
-            desAlbum.addPhoto(p);
-            updateData();
-            //after moving photo, return to AlbumView to show reflected changes
-            Intent i = new Intent(AddEditPhoto.this, AlbumView.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
+            if(desAlbum.getPhotos().contains(p)) {
+                Toast.makeText(this, "Photo Already in Album", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(AddEditPhoto.this, AlbumView.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+            else {
+                srcAlbum.removePhoto(p);
+                desAlbum.addPhoto(p);
+                updateData();
+                Toast.makeText(this, "Photo Moved", Toast.LENGTH_SHORT).show();
+                //after moving photo, return to AlbumView to show reflected changes
+                Intent i = new Intent(AddEditPhoto.this, AlbumView.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
         }
     }
 

@@ -140,7 +140,6 @@ public class AddEditAlbum extends AppCompatActivity {
             if (bundle != null) {
                 albumIndex = bundle.getInt(ALBUM_INDEX);
                 albumName.setText(albums.get(albumIndex).getAlbumName());
-                System.out.println("IN ACTIVITY RESULT");
             }
         }
         updateData();
