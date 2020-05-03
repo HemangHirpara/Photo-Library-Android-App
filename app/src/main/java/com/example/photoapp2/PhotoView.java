@@ -8,10 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.*;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -84,7 +81,6 @@ public class PhotoView extends AppCompatActivity {
     private void showPhoto(int pos) {
         //transition to display photo view to add tags/move photo
         Bundle bundle = new Bundle();
-        Photo photo = photos.get(pos);
         bundle.putInt(AddEditPhoto.PHOTO_INDEX, pos);
         bundle.putInt(AddEditPhoto.ALBUM_INDEX, albumIndex);
         Intent intent = new Intent(this, AddEditPhoto.class);
@@ -128,6 +124,12 @@ public class PhotoView extends AppCompatActivity {
 
         if(requestCode == ADD_PHOTO_CODE) {
             selectedImageUri = data.getData();
+            for(Photo p : albums.get(albumIndex).getPhotos()){
+                if(p.getPhotoFile().equals(selectedImageUri.toString())){
+                    Toast.makeText(this, "ERROR: Duplicate Photo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Photo p = new Photo(selectedImageUri.toString());
             //get file name to display as caption
             Cursor cursor = getContentResolver().query(selectedImageUri, null, null, null, null);
@@ -136,6 +138,7 @@ public class PhotoView extends AppCompatActivity {
             p.setCaption(cursor.getString(nameIndex));
             photos.add(p);
             updateData();
+            Toast.makeText(this, "Photo Added", Toast.LENGTH_SHORT).show();
         }
         if(resultCode == EDIT_PHOTO_CODE){
             Bundle bundle = data.getExtras();
@@ -148,6 +151,7 @@ public class PhotoView extends AppCompatActivity {
             Photo p = photos.get(index);
             p.setPersonTag(personVal);
             p.setLocationTag(locationVal);
+            Toast.makeText(this, "Photo Changes Saved", Toast.LENGTH_SHORT).show();
         }
         if(resultCode == DELETE_PHOTO_CODE){
             //bundle
@@ -157,6 +161,7 @@ public class PhotoView extends AppCompatActivity {
             }
             int index = bundle.getInt(PHOTO_INDEX);
             photos.remove(photos.get(index));
+            Toast.makeText(this, "Photo Deleted", Toast.LENGTH_SHORT).show();
         }
         if(resultCode == PHOTO_VIEW_CANCELED){
             return;
@@ -172,13 +177,11 @@ public class PhotoView extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.add_photo:
-                addPhoto();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.add_photo) {
+            addPhoto();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

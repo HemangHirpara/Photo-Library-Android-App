@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,12 +18,9 @@ public class MovePhoto extends AppCompatActivity {
     public static final String PHOTO_INDEX = "photo_pos";
     public static final String ALBUM_INDEX = "album_pos";
 
-    private ListView albumList;
     private ArrayList<Album> albums;
-    private String filePath;
     private int photoIndex, albumIndex;
-    private Photo photoToMove;
-    private Album currAlbum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +29,7 @@ public class MovePhoto extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
+        String filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
         try {
             FileInputStream fis = new FileInputStream(filePath);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -51,12 +45,10 @@ public class MovePhoto extends AppCompatActivity {
         if (bundle != null) {
             photoIndex = bundle.getInt(PHOTO_INDEX);
             albumIndex = bundle.getInt(ALBUM_INDEX);
-            currAlbum = albums.get(albumIndex);
-            photoToMove = currAlbum.getPhotos().get(photoIndex);
         }
 
-        albumList = findViewById(R.id.album_list_move);
-        albumList.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        ListView albumList = findViewById(R.id.album_list_move);
+        albumList.setAdapter(new ArrayAdapter<>(this, R.layout.album, albums));
 
         // show movie for possible edit when tapped
         albumList.setOnItemClickListener((p, V, pos, id) -> move(pos));
@@ -78,13 +70,11 @@ public class MovePhoto extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
 }

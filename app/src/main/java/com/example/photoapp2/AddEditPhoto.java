@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,17 +31,12 @@ public class AddEditPhoto extends AppCompatActivity {
 
     private int photoIndex, albumIndex;
     private Photo photo;
-    private ArrayList<Photo> photoList;
     private ArrayList<Album> albums;
-    private int open_flag;
 
     private String photoName, filePath;
     private Uri photoUri;
-    private ImageView imageView;
-    private TextView captionView;
     private EditText personField;
     private EditText locationField;
-    private Button deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +62,15 @@ public class AddEditPhoto extends AppCompatActivity {
         if (bundle != null) {
             photoIndex = bundle.getInt(PHOTO_INDEX);
             albumIndex = bundle.getInt(ALBUM_INDEX);
-            photoList = (ArrayList<Photo>) albums.get(albumIndex).getPhotos();
+            ArrayList<Photo> photoList = (ArrayList<Photo>) albums.get(albumIndex).getPhotos();
             photo = photoList.get(photoIndex);
             photoName = photo.getCaption();
             photoUri = Uri.parse(photo.getPhotoFile());
         }
         setTitle("Photo Display");
-        imageView = findViewById(R.id.ssImageView);
+        ImageView imageView = findViewById(R.id.ssImageView);
         imageView.setImageURI(photoUri);
-        captionView = findViewById(R.id.photo_caption);
+        TextView captionView = findViewById(R.id.photo_caption);
         captionView.setText(photoName);
         personField = findViewById(R.id.person_tag_field);
         personField.setText(photo.getPersonTag());
@@ -185,13 +179,11 @@ public class AddEditPhoto extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

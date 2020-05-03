@@ -2,6 +2,7 @@ package com.example.photoapp2;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -14,8 +15,8 @@ import android.widget.*;
 // for parts of the arbitrary string we want
 public class SearchAdapter extends BaseAdapter implements Filterable {
 
-    private ArrayList<Photo>originalData = null;
-    private ArrayList<Photo>filteredData = null;
+    private ArrayList<Photo>originalData;
+    private ArrayList<Photo>filteredData;
     private LayoutInflater mInflater;
     private ItemFilter mFilter = new ItemFilter();
 
@@ -37,6 +38,7 @@ public class SearchAdapter extends BaseAdapter implements Filterable {
         return position;
     }
 
+    @SuppressLint("InflateParams")
     public View getView(int position, View convertView, ViewGroup parent) {
         // A ViewHolder keeps references to children views to avoid unnecessary calls
         // to findViewById() on each row.
@@ -50,8 +52,8 @@ public class SearchAdapter extends BaseAdapter implements Filterable {
             // Creates a ViewHolder and store references to the two children views
             // we want to bind data to.
             holder = new ViewHolder();
-            holder.txtTitle = (TextView) convertView.findViewById(R.id.caption);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.thumbnail);
+            holder.txtTitle = convertView.findViewById(R.id.caption);
+            holder.imageView = convertView.findViewById(R.id.thumbnail);
             convertView.setTag(holder);
             // Bind the data efficiently with the holder.
             convertView.setTag(holder);
@@ -80,24 +82,23 @@ public class SearchAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             String filterString;
-            Boolean filterByPerson = constraint.toString().startsWith("PERSON");
+            boolean filterByPerson = constraint.toString().startsWith("PERSON");
             FilterResults results = new FilterResults();
 
             final ArrayList<Photo> list = originalData;
 
             int count = list.size();
-            final ArrayList<Photo> nlist = new ArrayList<Photo>(count);
+            final ArrayList<Photo> nlist = new ArrayList<>(count);
 
-            for (int i = 0; i < count; i++) {
-                if(filterByPerson) {
-                     filterString = constraint.toString().toLowerCase().substring(6);
-                    if (list.get(i).getPersonTag().toLowerCase().startsWith(filterString))
-                        nlist.add(list.get(i));
-                }
-                else{
+            for (Photo photo : list) {
+                if (filterByPerson) {
+                    filterString = constraint.toString().toLowerCase().substring(6);
+                    if (photo.getPersonTag().toLowerCase().startsWith(filterString))
+                        nlist.add(photo);
+                } else {
                     filterString = constraint.toString().toLowerCase().substring(8);
-                    if (list.get(i).getLocationTag().toLowerCase().startsWith(filterString))
-                        nlist.add(list.get(i));
+                    if (photo.getLocationTag().toLowerCase().startsWith(filterString))
+                        nlist.add(photo);
                 }
             }
 

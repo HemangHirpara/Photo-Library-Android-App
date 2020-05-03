@@ -7,8 +7,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
@@ -24,11 +22,9 @@ public class AdvanceSearch extends AppCompatActivity {
     private ArrayList<Photo> allPhotoList;
     private ArrayList<Photo> resultList;
     private ArrayList<Album> albums;
-    private String filePath;
     private EditText advSearchPerson;
     private EditText advSearchLocation;
     private RadioGroup radioGroup;
-    private RadioButton radioButton;
     private ListView searchList;
     private SearchAdapter adapter;
 
@@ -39,7 +35,7 @@ public class AdvanceSearch extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
+        String filePath = getExternalFilesDir(null).getAbsolutePath() + File.separator + "album.data";
         try {
             FileInputStream fis = new FileInputStream(filePath);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -51,9 +47,7 @@ public class AdvanceSearch extends AppCompatActivity {
         }
         allPhotoList = new ArrayList<>();
         for(Album a : albums){
-            for(Photo p : a.getPhotos()){
-                allPhotoList.add(p);
-            }
+            allPhotoList.addAll(a.getPhotos());
         }
 
         //get data necessary to show album
@@ -77,7 +71,7 @@ public class AdvanceSearch extends AppCompatActivity {
         String locationVal = advSearchLocation.getText().toString();
         if(personVal == null || personVal.length() < 1 || locationVal == null || locationVal.length() < 1 ) return;
         int selectedRadio = radioGroup.getCheckedRadioButtonId();
-        radioButton = findViewById(selectedRadio);
+        RadioButton radioButton = findViewById(selectedRadio);
         //AND
         if(radioButton.getText().equals("AND")) {
             for (Photo p : allPhotoList) {
@@ -95,24 +89,25 @@ public class AdvanceSearch extends AppCompatActivity {
                 }
             }
         }
+        if(resultList.size() == 0)
+            Toast.makeText(this, "No Results for Query", Toast.LENGTH_SHORT).show();
         adapter = new SearchAdapter(this, resultList);
         searchList.setAdapter(adapter);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * Hide soft keyboard by clicking on window
-     * @param event
-     * @return
+     * @param event Detect event to remove keyboard
+     * @return true if successful hide
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

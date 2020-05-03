@@ -21,7 +21,6 @@ public class AddEditAlbum extends AppCompatActivity {
 
     private static final int OPEN_ALBUM_CODE = 123;
 
-    private Button openBtn, deleteBtn;
     private int albumIndex;
     private int openButtonFlag;
     private EditText albumName;
@@ -58,9 +57,9 @@ public class AddEditAlbum extends AppCompatActivity {
         }
         //only show the open button if show/editing an album
         if(openButtonFlag != 9) {
-            openBtn = findViewById(R.id.album_open);
+            Button openBtn = findViewById(R.id.album_open);
             openBtn.setVisibility(View.GONE);
-            deleteBtn = findViewById(R.id.album_delete);
+            Button deleteBtn = findViewById(R.id.album_delete);
             deleteBtn.setVisibility(View.GONE);
         }
     }
@@ -148,13 +147,11 @@ public class AddEditAlbum extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
@@ -33,7 +34,6 @@ public class AlbumView extends AppCompatActivity {
             // serialize the data
             albums = new ArrayList<>();
             try {
-                data.createNewFile();
                 FileOutputStream fos = new FileOutputStream(filePath);
                 ObjectOutputStream ous = new ObjectOutputStream(fos);
                 ous.writeObject(albums);
@@ -56,7 +56,7 @@ public class AlbumView extends AppCompatActivity {
         }
 
         listView = findViewById(R.id.album_list);
-        listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.album, albums));
 
         // show movie for possible edit when tapped
         listView.setOnItemClickListener((p, V, pos, id) -> showAlbum(pos));
@@ -64,7 +64,7 @@ public class AlbumView extends AppCompatActivity {
 
     protected  void onResume() {
         super.onResume();
-        listView.setAdapter(new ArrayAdapter<Album>(this, R.layout.album, albums));
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.album, albums));
     }
 
     protected void onStop() {
@@ -74,7 +74,6 @@ public class AlbumView extends AppCompatActivity {
 
     private void showAlbum(int pos) {
         Bundle bundle = new Bundle();
-        Album album = albums.get(pos);
         bundle.putInt(AddEditAlbum.ALBUM_INDEX, pos);
         bundle.putInt(AddEditAlbum.ALBUM_OPEN_FLAG, 9);
         Intent intent = new Intent(this, AddEditAlbum.class);
@@ -110,23 +109,26 @@ public class AlbumView extends AppCompatActivity {
 
         if(resultCode == DELETE_ALBUM_CODE){
             albums.remove(index);
+            Toast.makeText(this, "Album Deleted", Toast.LENGTH_SHORT).show();
         }
         else if(resultCode == RESULT_OK){
             for(Album a : albums)
                 if(a.getAlbumName().equals(name)){
                     Bundle b = new Bundle();
-                    bundle.putString(PhotoDialogFragment.MESSAGE_KEY,
+                    b.putString(PhotoDialogFragment.MESSAGE_KEY,
                             "Name is duplicate");
                     DialogFragment newFragment = new PhotoDialogFragment();
-                    newFragment.setArguments(bundle);
+                    newFragment.setArguments(b);
                     newFragment.show(getSupportFragmentManager(), "badfields");
                     return;
                 }
             if (requestCode == EDIT_ALBUM_CODE) {
                 Album album = albums.get(index);
                 album.setAlbumName(name);
+                Toast.makeText(this, "Album Edited", Toast.LENGTH_SHORT).show();
             } else {
                 albums.add(new Album(name));
+                Toast.makeText(this, "New Album Added", Toast.LENGTH_SHORT).show();
             }
         }
 
